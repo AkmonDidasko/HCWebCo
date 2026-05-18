@@ -148,98 +148,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   /* -------------------------------------------------------
-     CONTACT FORM — Formspree
-  ------------------------------------------------------- */
-  const FORMSPREE_URL = 'https://formspree.io/f/mbdbjwqa';
-
-  const form       = document.getElementById('contact-form');
-  const formStatus = document.getElementById('form-status');
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    clearErrors();
-
-    // Basic validation
-    const name    = form.name.value.trim();
-    const email   = form.email.value.trim();
-    const message = form.message.value.trim();
-    let valid = true;
-
-    if (!name) {
-      showFieldError(form.name, 'Please enter your name.');
-      valid = false;
-    }
-
-    if (!email || !isValidEmail(email)) {
-      showFieldError(form.email, 'Please enter a valid email address.');
-      valid = false;
-    }
-
-    if (!message) {
-      showFieldError(form.message, 'Please enter a message.');
-      valid = false;
-    }
-
-    if (!valid) return;
-
-    const submitBtn = form.querySelector('.btn-submit');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending...';
-
-    try {
-      const res = await fetch(FORMSPREE_URL, {
-        method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: new FormData(form),
-      });
-
-      if (res.ok) {
-        form.reset();
-        showStatus('success', "Message sent! I'll be in touch shortly.");
-      } else {
-        const data = await res.json();
-        const msg = data?.errors?.map(err => err.message).join(', ') || 'Something went wrong. Please try again.';
-        showStatus('error', msg);
-      }
-    } catch {
-      showStatus('error', 'Could not send your message. Please check your connection and try again.');
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Send Message';
-    }
-  });
-
-  function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  }
-
-  function showFieldError(field, msg) {
-    field.classList.add('error');
-    const err = document.createElement('span');
-    err.className = 'field-error';
-    err.style.cssText = 'font-size:0.8rem;color:#ef4444;margin-top:-0.2rem;';
-    err.textContent = msg;
-    field.parentElement.appendChild(err);
-  }
-
-  function clearErrors() {
-    form.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
-    form.querySelectorAll('.field-error').forEach(el => el.remove());
-    formStatus.className = 'form-status';
-    formStatus.textContent = '';
-  }
-
-  function showStatus(type, msg) {
-    formStatus.className = 'form-status ' + type;
-    formStatus.textContent = msg;
-    formStatus.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-
-
-  /* -------------------------------------------------------
      FOOTER YEAR
   ------------------------------------------------------- */
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
 });
+
